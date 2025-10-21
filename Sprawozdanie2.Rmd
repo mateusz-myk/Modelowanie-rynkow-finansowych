@@ -1,0 +1,132 @@
+---
+title: "Sprawozdanie 2"
+author: "Mateusz Wizner, 277508"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    df_print: paged
+  pdf_document:
+    toc: true
+    fig_caption: true
+    fig_width: 5
+    fig_height: 4
+    toc_depth: 3
+    number_sections: true
+header-includes:
+- \usepackage[OT4]{polski}
+- \usepackage[utf8]{inputenc}
+- \usepackage{graphicx}
+- \usepackage{float}
+- \usepackage{xcolor}
+- \definecolor{myblue}{HTML}{D0E9F9}
+- \definecolor{myyellow}{HTML}{FFFACD}
+subtitle: Modelowanie rynków finansowych
+fontsize: 12pt
+---
+
+```{r zadanie4}
+#_______________________________________________________________________________
+#
+#------------------------------Zadanie 2.4--------------------------------------
+#
+#_______________________________________________________________________________
+# Efektywna roczna stopa procentowa wynosi $15\%$. Podaj nominalna równoważną 
+# stope procentową przy kapitalizacji 
+#
+# a) kwartalnej,
+# b) miesięcznej,
+# c) dziennej,
+# d) ciągłej.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+# 1 + r{eff} = (1 + r{nom}/m)^(m*t) ==> r{nom} = m[(1 + r{eff})^(1/(t*m) - 1]
+
+r_nom <- function(r_eff, m){
+    if(m[1] == "con")
+      r_nom = log(1 + r_eff)
+    else  
+      r_nom <- m[1] * ((1 + r_eff)^(1 / m[1]) - 1)
+  return(r_nom)
+}
+
+
+# podpunkt (a)
+
+r_nom(0.15 , 4)
+
+# podpunkt (b)
+
+r_nom(0.15 , 12)
+
+# podpunkt (c)
+
+r_nom(0.15 , 365)
+
+# podpunkt (d)
+
+r_nom(0.15 , "con")
+
+```
+
+
+```{r zadanie5}
+#_______________________________________________________________________________
+#
+#------------------------------Zadanie 2.5--------------------------------------
+#
+#_______________________________________________________________________________
+# Na rachunek (z kapitalizacja miesięczną) chcemy wpłacic 7000 PLN teraz oraz
+# co miesiac przez pół roku kwoty w wysokości 800 PLN. Jakie najniższe 
+# oprocentowanie w skali roku pozwoli nam zgromadzić po pół roku kwotę 
+# w wysokości 12000 PLN?
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+library(FinCal)
+
+kwota_pocz = -7000
+wplaty = -800
+kwota_koncowa = 12000
+
+r_mies = discount.rate(6, kwota_pocz, kwota_koncowa, wplaty, 0)
+
+r_eff = (1 + r_mies)^12 - 1
+
+print("Nominalna roczna stopa procentowa: ")
+round(r_nom(r_eff, 12)*100, 6)
+
+```
+
+```{r zadanie7}
+#_______________________________________________________________________________
+#
+#------------------------------Zadanie 2.7--------------------------------------
+#
+#_______________________________________________________________________________
+# Bank może nam udzielić kredytu w wysokości 16 000 PLN na okres 4 lat.
+# Możemy wybrac pomiędzy jednym z dwóch sposobów spłaty kredytu:
+#
+# - spłata kredytu w dwóch ratach po 10000 PLN każda 
+#   (na koniec drugiego i czwartego roku) 
+#
+# lub
+#
+# - spłata kredytu w czterech ratach po 5000 PLN każda.
+#
+# Ile wyniesie RRSO w obydwu propozycjach i która z propozycji spłaty 
+# jest dla nas korzystniejsza?
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+przeplywy1 = c(16000, 0, -10000, 0, -10000)
+
+przeplywy2 = c(16000, -5000, -5000, -5000, -5000)
+
+irr1 = irr(przeplywy1)
+irr2 = irr(przeplywy2)
+
+cat("Pierwszy wariant: ", round(irr1*100, 6), "%\n")
+cat("Drugi wariant: ", round(irr2*100, 6), "%\n")
+
+cat("Lepszą opcją jest: ")
+if (irr1 < irr2) cat("1\n") else if (irr1 > irr2) cat("2\n")
+```
