@@ -11,7 +11,27 @@
 # Przyjmujemy tutaj, że dzień rozliczenia transakcji to D+2.
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
+F <- 1000.00
+C_rate <- 0.025   # Roczny kupon (2.500%) ze strony ministerstwa finansów
+Kurs <- 102.40    # Kurs giełdowy
+Dni_w_roku <- 365
 
+# 1. Cena czysta
+Czysta <- F * (Kurs / 100)
+
+# 2. Narosłe odsetki
+# Data rozliczenia: 14.02.2019
+# Ostatni kupon: 25.01.2019 (każdego roku)
+dni <- 20 # Liczba dni: 6 dni w styczniu + 14 dni w lutym
+
+C <- F * C_rate # Kwota rocznego kuponu
+AI <- C * (dni / Dni_w_roku)
+
+# 3. Cena brudna (Brudna)
+Brudna <- Czysta + AI
+
+# Wyniki
+cat("Cena 'brudna':", round(Brudna, 4), "PLN\n")
 
 
 #_______________________________________________________________________________
@@ -28,7 +48,27 @@
 # to D+2.
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
+F <- 1000.00
+Kurs <- 96.90      # Kurs obligacji
+proc_maklera <- 0.0012 # Prowizja maklera
 
+# 1. Obliczenie efektywnej ceny zakupu
+Czysta <- F * (Kurs / 100)
+Prowizja_kwota <- Czysta * proc_maklera
+cena_eff <- Czysta + Prowizja_kwota
+
+# 2. Obliczenie czasu do wykupu
+# Dzień rozliczenia: 22.02.2019
+# Dzień wykupu: 25.05.2021 (ze slajdów)
+# Łączna liczba dni: 823
+dni <- 823
+dni_w_roku <- 365
+t <- dni / dni_w_roku
+
+# 3. Obliczenie YTM
+YTM <- (F / cena_eff)^(1 / t) - 1
+
+cat("Rentowność (YTM):", round(YTM * 100, 4), "%")
 
 
 #_______________________________________________________________________________
@@ -41,7 +81,16 @@
 # a wymagana stopa dochodu inwestora 10%. Dokonaj wyceny obligacji. 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
+F <- 100
+r <- 0.10
+dni <- 115 + 2*365
 
+# Obliczenie całkowitego czasu do wykupu w latach:
+t <- dni / 365
+
+P <- F * (1 + r)^(-t)
+
+cat("Wycena obligacji (P):", round(P, 4), "PLN")
 
 
 #_______________________________________________________________________________
@@ -208,7 +257,3 @@ print(paste("Wartość YTM wynosi ",round(ytm, 6)*100, "%"))
 
 
 # (d)   
-
-
-
-
