@@ -203,11 +203,6 @@ cat("Współczynnik beta dla nowo zakupionej akcji X powinien wynosić: ", wsp_b
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 
-
-
-
-
-
 #_______________________________________________________________________________
 #
 #------------------------------Zadanie 5.9--------------------------------------
@@ -224,8 +219,15 @@ cat("Współczynnik beta dla nowo zakupionej akcji X powinien wynosić: ", wsp_b
 #
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
+# najtańsze kupno to 4.3227, najdroższa sprzedaż to 4.3257 więc możliwy jest arbitraż
 
+# kupno EUR po najniższym ask (Rynek 1)
+eur = 1e6 / 4.3227
 
+# sprzedaż EUR po najwyższym bid (Rynek 2)
+koniec = eur * 4.3257
+
+cat("Zysk to ", koniec - 1e6)
 
 
 
@@ -245,12 +247,27 @@ cat("Współczynnik beta dla nowo zakupionej akcji X powinien wynosić: ", wsp_b
 # Jeśli tak, to jaki byłby z niego zysk przy inwestycji 100 000 USD?
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
+# Kursy walut
+# USD → EUR = 0.9405
+# USD → JPY = 157.771
+# EUR → JPY = 168.708
 
+# Sprawdzenie kursu pośredniego USD → EUR → JPY
+kurs_posredni <- 0.9405 * 168.708
+kurs_posredni
+# Jest on wyższy niż kurs bezpośredni USD → JPY (157.771),
+# więc opłaca się najpierw przejść przez EUR.
 
+# Pełny cykl arbitrażowy: USD → EUR → JPY → USD
+cykl <- 0.9405 * 168.708 * (1 / 157.771)
+cykl
+# Oznacza to, że z 1 USD robi się 1.005697 USD.
 
+# Zysk przy inwestycji 100 000 USD
+kapital <- 1e5
+zysk <- kapital * cykl - kapital
 
-
-
+cat("Zysk:", zysk)
 
 
 
